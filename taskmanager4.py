@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timedelta  # 添加timedelta导入
 
 class TaskManager:
     def __init__(self, root):
@@ -84,13 +84,6 @@ class TaskManager:
         container = ttk.Frame(dialog, padding="20")
         container.pack(fill=tk.BOTH, expand=True)
         
-        # ========== 新增：配置列和行的权重，让 grid 布局自适应空间 ==========
-        container.columnconfigure(0, weight=1)   # 第0列（标签列）分配1份权重
-        container.columnconfigure(1, weight=3)   # 第1列（输入框列）分配3份权重（更宽）
-        for i in range(7):  # 共7行（row 0 到 row 6），每行都分配权重
-            container.rowconfigure(i, weight=1)
-        # ================================================================
-        
         # 任务标题
         ttk.Label(container, text="任务标题:").grid(row=0, column=0, sticky=tk.W, padx=10, pady=10)
         title_entry = ttk.Entry(container, width=40)
@@ -122,7 +115,7 @@ class TaskManager:
         due_date_entry = ttk.Entry(container, width=40)
         due_date_entry.grid(row=4, column=1, padx=10, pady=10, sticky=tk.W)
         tomorrow = (datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + 
-                   datetime.timedelta(days=1)).strftime("%Y-%m-%d")
+                   timedelta(days=1)).strftime("%Y-%m-%d")  # 修正：使用timedelta而不是datetime.timedelta
         due_date_entry.insert(0, tomorrow)
         
         # 任务状态
@@ -135,10 +128,7 @@ class TaskManager:
         
         # 确认添加按钮 - 确保在可见区域
         btn_frame = ttk.Frame(container)
-        # 新增 sticky=tk.NSEW，让框架在单元格内上下左右拉伸
-        btn_frame.grid(row=6, column=0, columnspan=2, pady=20, sticky=tk.NSEW)
-        
-        
+        btn_frame.grid(row=6, column=0, columnspan=2, pady=20)
         
         def confirm():
             title = title_entry.get().strip()
